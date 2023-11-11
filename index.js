@@ -80,6 +80,7 @@ Block.prototype.drawCircle = function (color) {
   
 
 // Проверяем, находится ли эта ячейка в той же позиции, что и ячейка
+// otherBlock
 Block.prototype.equal = function (otherBlock) {
     return this.col === otherBlock.col && this.row === otherBlock.row;
    }
@@ -214,6 +215,21 @@ var intervalId = setInterval(function () {
       snake.setDirection(newDirection);
     }
   });
+
+
+  
+  let buttons = document.getElementsByClassName('control-button');
+for (let btn of buttons) {
+    btn.addEventListener('mousedown', function() {
+        this.style.opacity = '0.5';
+    });
+    btn.addEventListener('mouseup', function() {
+        this.style.opacity = '1';
+    });
+    btn.addEventListener('mouseout', function() {
+        this.style.opacity = '1';
+    });
+}
 
   document.getElementById('up').addEventListener('click', function() {
     snake.setDirection('up');
