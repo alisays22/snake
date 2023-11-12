@@ -1,6 +1,27 @@
 const game = document.getElementById("game");
 const ctx = game.getContext("2d");
 
+// кнопка старт
+document.getElementById('start-game').addEventListener('click', function() {
+    startGame();
+  });
+ 
+  document.getElementById('up').addEventListener('click', function() {
+    snake.setDirection('up');
+});
+
+document.getElementById('right').addEventListener('click', function() {
+    snake.setDirection('right');
+});
+
+document.getElementById('left').addEventListener('click', function() {
+    snake.setDirection('left');
+});
+
+document.getElementById('down').addEventListener('click', function() {
+    snake.setDirection('down');
+});
+
 let width = game.width;
 let height = game.height;
 
@@ -12,9 +33,25 @@ let heightBlocks = game.height/blockSize;
 // счет
 let score = 0;
 
+function startGame() {
+    document.getElementById("start-game").style.display = "none"; // скрытие кнопки
+    clearInterval(intervalId);
+    snake = new Snake();
+    apple = new Apple();
+    score = 0;
+    intervalId = setInterval(function () {
+      ctx.clearRect(0, 0, width, height);
+      drawScore();
+      snake.move();
+      snake.draw();
+      apple.draw();
+      drawBorder();
+    }, 100); 
+}
+
 // рамка 
 const drawBorder = function () {
-    ctx.fillStyle = "Black";
+    ctx.fillStyle = "Red";
     ctx.fillRect(0, 0, width, blockSize);
     ctx.fillRect(0, height - blockSize, width, blockSize);
     ctx.fillRect(0, 0, blockSize, height);
@@ -23,21 +60,22 @@ const drawBorder = function () {
    // Счет игры 
   const drawScore = function () {
     ctx.font = "20px Courier";
-    ctx.fillStyle = "Black";
+    ctx.fillStyle = "White";
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
     ctx.fillText("Счет: " + score, blockSize, blockSize);
    }
 
-const gameOver = function () {
-    clearInterval(intervalId)
+   const gameOver = function () {
+    clearInterval(intervalId);
+    ctx.clearRect(0, 0, width, height);
     ctx.font = "60px Arial";
-    ctx.fillStyle = "Red"
-    ctx.textAlign = "center"
-    ctx.textBaseline = "bold"
-    ctx.fillText(`GAME OVER`, width/2, height/2)
-}
-
+    ctx.fillStyle = "Red";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(`GAME OVER`, width/2, height/2);
+    document.getElementById("start-game").style.display = "block";
+  }
 // Рисуем окружность 
 var circle = function (x, y, radius, fillCircle) {
     ctx.beginPath();
@@ -56,8 +94,6 @@ const Block = function(col, row) {
     this.row = row;
 };
 
-// drawBorder();
-// drawScore();
 
 // Рисуем квадрат в позиции ячейки
 Block.prototype.drawSquare = function(color) {
@@ -66,9 +102,6 @@ Block.prototype.drawSquare = function(color) {
     ctx.fillStyle = color;
     ctx.fillRect(x, y, blockSize, blockSize);
 };
-
-// const sampleBlock = new Block(3, 4);
-// sampleBlock.drawSquare("Green");
 
 // Рисуем круг в позиции ячейки
 Block.prototype.drawCircle = function (color) {
@@ -80,7 +113,6 @@ Block.prototype.drawCircle = function (color) {
   
 
 // Проверяем, находится ли эта ячейка в той же позиции, что и ячейка
-// otherBlock
 Block.prototype.equal = function (otherBlock) {
     return this.col === otherBlock.col && this.row === otherBlock.row;
    }
@@ -217,7 +249,6 @@ var intervalId = setInterval(function () {
   });
 
 
-  
   let buttons = document.getElementsByClassName('control-button');
 for (let btn of buttons) {
     btn.addEventListener('mousedown', function() {
@@ -231,21 +262,6 @@ for (let btn of buttons) {
     });
 }
 
-  document.getElementById('up').addEventListener('click', function() {
-    snake.setDirection('up');
-});
-
-document.getElementById('right').addEventListener('click', function() {
-    snake.setDirection('right');
-});
-
-document.getElementById('left').addEventListener('click', function() {
-    snake.setDirection('left');
-});
-
-document.getElementById('down').addEventListener('click', function() {
-    snake.setDirection('down');
-});
 
      
       
