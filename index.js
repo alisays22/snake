@@ -33,20 +33,29 @@ let heightBlocks = game.height/blockSize;
 // счет
 let score = 0;
 
+
+const baseDelay = 100; // базовая задержка перед каждым движением змейки
+
+// let intervalId = null; 
+let delay = baseDelay; // текущая задержка (она будет изменяться)
+
 function startGame() {
     document.getElementById("start-game").style.display = "none"; // скрытие кнопки
-    clearInterval(intervalId);
+    clearInterval(intervalId); // убеждаемся, что предыдущий интервал был отменен
     snake = new Snake();
     apple = new Apple();
     score = 0;
-    intervalId = setInterval(function () {
-      ctx.clearRect(0, 0, width, height);
-      drawScore();
-      snake.move();
-      snake.draw();
-      apple.draw();
-      drawBorder();
-    }, 100); 
+    delay = baseDelay; // сбрасываем задержку перед началом новой игры
+    intervalId = setInterval(gameLoop, delay); 
+}
+
+function gameLoop() {
+    ctx.clearRect(0, 0, width, height);
+    drawScore();
+    snake.move();
+    snake.draw();
+    apple.draw();
+    drawBorder();
 }
 
 // рамка 
@@ -156,6 +165,11 @@ Snake.prototype.move = function () {
      this.segments.unshift(newHead);
     if (newHead.equal(apple.position)) {
       score++;
+      if (score % 5 === 0) {
+        delay *= 0.9; // уменьшаем задержку, чтобы змейка двигалась быстрее
+        clearInterval(intervalId); // останавливаем текущий цикл игры
+        intervalId = setInterval(gameLoop, delay); // и начинаем новый с более короткой задержкой
+    }
       apple.move();
       } else {
       this.segments.pop();
